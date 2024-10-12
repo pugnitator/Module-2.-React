@@ -38,7 +38,10 @@ export function App() {
 		cursor: pointer;
 		border-radius: 50%;
 		padding: 0.75rem 1rem;
-		background: ${props => props.isPassed ? `hsl(var(--accent-color-hue), var(--accent-color-saturation), 92%)` : `#cccc`};
+		background: ${(props) =>
+			props.isPassed
+				? `hsl(var(--accent-color-hue), var(--accent-color-saturation), 92%)`
+				: `#cccc`};
 		border: none;
 		margin-bottom: 0.25rem;
 	`;
@@ -71,30 +74,54 @@ export function App() {
 	`;
 
 	const stepsList = require("./data.json");
-  console.log(stepsList[1]);
 	const [currentStep, setStep] = useState(stepsList[0]);
+	const isFirstStep = stepsList.indexOf(currentStep) === 0;
+	const isLastStep = stepsList.indexOf(currentStep) === stepsList.length - 1;
 
-  const isStepPassed = (stepIndex) => {
-    const currentStepIndex = stepsList.indexOf(currentStep);
-    if (stepIndex <= currentStepIndex) return true
-    else return false
-  }
+	const isStepPassed = (stepIndex) => {
+		const currentStepIndex = stepsList.indexOf(currentStep);
+		if (stepIndex <= currentStepIndex) return true;
+		else return false;
+	};
+
+	const onClickBackButton = () => {
+		const currentStepIndex = stepsList.indexOf(currentStep);
+		setStep(stepsList[currentStepIndex - 1]);
+	};
+
+	const onClickNextButton = () => {
+		const currentStepIndex = stepsList.indexOf(currentStep);
+		setStep(stepsList[currentStepIndex + 1]);
+	};
+
+	const onClickRestart = () => {
+		setStep(stepsList[0]);
+	};
 
 	return (
 		<Container>
 			<Title>Инструкция по приготовлению пельменей</Title>
 			<StepDescription>{currentStep.content}</StepDescription>
 			<StepsList>
-					{stepsList.map((step, index) =>
-          <Step key={step.id}>
-						<StepNumber isPassed={isStepPassed(index)}>{index + 1}</StepNumber>
+				{stepsList.map((step, index) => (
+					<Step key={step.id}>
+						<StepNumber
+							onClick={() => setStep(step)}
+							isPassed={isStepPassed(index)}
+						>
+							{index + 1}
+						</StepNumber>
 						<StepName>{step.title}</StepName>
-          </Step>
-          )}
+					</Step>
+				))}
 			</StepsList>
 			<ButtonContainer>
-				<Button>Назад</Button>
-				<Button>Вперед</Button>
+				<Button onClick={onClickBackButton} disabled={isFirstStep}>
+					Назад
+				</Button>
+				<Button onClick={isLastStep ? onClickRestart : onClickNextButton}>
+					{isLastStep ? "Начать сначала" : "Далее"}
+				</Button>
 			</ButtonContainer>
 		</Container>
 	);
