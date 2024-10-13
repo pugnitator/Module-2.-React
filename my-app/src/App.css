@@ -1,5 +1,7 @@
-:root {
-	background-color: #99A6F2;
-	/* color:  */
-};
 
+body {
+	height: 100%;
+	margin: auto;
+	align-content: center;
+	color: rebeccapurple;
+};
