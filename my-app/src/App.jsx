@@ -108,7 +108,7 @@ function App() {
 				<Title2>Список:</Title2>
 				{!list[0] && <p class="no-margin-text">Нет добавленных элементов</p>}
 				{list[0] && <List>
-					{list.map((listItem) => <ListItem>{listItem.value}</ListItem>)}
+					{list.map((listItem) => <ListItem key={Date.now()}>{listItem.value}</ListItem>)}
 				</List>}
 			</ListContainer>
 		</Container>
