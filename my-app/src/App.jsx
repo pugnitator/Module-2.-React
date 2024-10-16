@@ -12,7 +12,7 @@ export function App() {
 		align-items: center;
 		gap: 5px;
 		border: 2px solid #2e9aff;
-    border-radius: 5px;
+		border-radius: 5px;
 	`;
 	const OutputConteiner = styled.div`
 		display: flex;
@@ -25,7 +25,7 @@ export function App() {
 	const MathExpression = styled.output`
 		height: 3vh;
 		align-content: center;
-    color: ${props => props.isResult ? 'red' : '#000'}
+		color: ${(props) => (props.isResult ? "red" : "#000")};
 	`;
 	const Keyboard = styled.div`
 		display: flex;
@@ -65,33 +65,51 @@ export function App() {
 	];
 	const resultButton = ["С", "="];
 	const [output, setOutput] = useState("0");
-  const [result, setResult] = useState("0");
-  const [isResult, setIsResult] = useState(false)
+	const [result, setResult] = useState("0");
+	const [isResult, setIsResult] = useState(false);
 
 	const onClickInputButton = (element) => {
-    setIsResult(false);
-    const [value, type] = element;
-    if (type === "action") {
-      setOutput(output === "0" ? output : output + ` ${value} `)
-    } else {
-      if (result === output) setOutput(value)
-      else setOutput(output === "0" ? value : output + value)
-    }
+		setIsResult(false);
+		const [value, type] = element;
+		
+		if (type === "action") {
+			if (output.length >= 3) {
+				setOutput(calculate(output) + ` ${value} `);
+				console.log(output);
+			} else if (output.length < 3) {
+				setOutput(output + ` ${value} `)
+			} else throw new Error('Ошибка записи выражения в onClickInputButton')
+		} else {
+			if (result === output) setOutput(value);
+			else setOutput(output === "0" ? value : output + value);
+		}
 	};
 
 	const onClickResult = (element) => {
 		if (element === "=") {
-      const value = eval(output);
-      setResult(value);
+			const value = calculate(output);
+			setResult(value);
 			setOutput(value);
-      setIsResult(true);
+			setIsResult(true);
 		} else if ((element = "С")) {
-      setIsResult(false);
+			setIsResult(false);
 			setOutput("0");
 			setResult("0");
 		} else {
 			setOutput("Неизвестная ошибка. Нажмите сброс");
 			throw new Error("Неизвестное значение");
+		}
+	};
+
+	const calculate = (mathExpression) => {
+		const [value1, mathOperator, value2] = mathExpression.split(' ');
+		console.log(value1, mathOperator, value2);
+		try {
+			if (mathOperator === "+") return Number(value1) + Number(value2);
+			else if (mathOperator === "-") return Number(value1) - Number(value2);
+			else throw new Error("Ошибка расчёта");
+		} catch {
+			return output
 		}
 	};
 
